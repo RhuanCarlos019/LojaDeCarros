@@ -67,7 +67,6 @@ public class Clientes {
         this.pretensao = pretensao;
     }
 
-    // Outros métodos, se necessário
 
     @Override
     public String toString() {
