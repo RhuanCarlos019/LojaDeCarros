@@ -1,27 +1,13 @@
 package Controller;
 
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-
 import Model.Clientes;
+import DAO.ClientesDAO;
 
-public class ClientesControl extends JPanel {
-    private JTextField clienteNomeField;
-    private JTextField clienteEmailField;
-    private JTextField clienteCpfField;
-    private JTextField clienteRgField;
-    private JTextField clienteRendaField;
-    private JTextField clientePretensaoField;
-    private JButton cadastrarClienteButton;
-    private JButton editarClienteButton;
-    private JButton apagarClienteButton;
+public class ClientesControl {
 
     private List<Clientes> clientes;
     private DefaultTableModel tableModel;
@@ -31,161 +17,83 @@ public class ClientesControl extends JPanel {
         this.clientes = clientes;
         this.tableModel = tableModel;
         this.table = table;
-
-        JLabel labelNome = new JLabel("Nome");
-        JLabel labelEmail = new JLabel("E-mail");
-        JLabel labelCpf = new JLabel("CPF");
-        JLabel labelRg = new JLabel("RG");
-        JLabel labelRenda = new JLabel("Renda Fixa");
-        JLabel labelPretensao = new JLabel("Pretensão");
-
-        clienteNomeField = new JTextField(20);
-        clienteEmailField = new JTextField(20);
-        clienteCpfField = new JTextField(20);
-        clienteRgField = new JTextField(20);
-        clienteRendaField = new JTextField(20);
-        clientePretensaoField = new JTextField(20);
-
-        cadastrarClienteButton = new JButton("Cadastrar");
-        editarClienteButton = new JButton("Editar");
-        apagarClienteButton = new JButton("Apagar");
-
-        add(labelNome);
-        add(clienteNomeField);
-        add(labelEmail);
-        add(clienteEmailField);
-        add(labelCpf);
-        add(clienteCpfField);
-        add(labelRg);
-        add(clienteRgField);
-        add(labelRenda);
-        add(clienteRendaField);
-        add(labelPretensao);
-        add(clientePretensaoField);
-        add(cadastrarClienteButton);
-        add(editarClienteButton);
-        add(apagarClienteButton);
-
-        cadastrarClienteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cadastrarCliente();
-            }
-        });
-
-        editarClienteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                editarCliente();
-            }
-        });
-
-        apagarClienteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                apagarCliente();
-            }
-        });
     }
 
-    public ClientesControl() {
-    }
-
-    private void cadastrarCliente() {
-        String nome = clienteNomeField.getText();
-        String email = clienteEmailField.getText();
-        String cpf = clienteCpfField.getText();
-        String rg = clienteRgField.getText();
-        String rendaFixa = clienteRendaField.getText();
-        String pretensao = clientePretensaoField.getText();
-
-        if (validarCampos(nome, email, cpf, rg, rendaFixa, pretensao)) {
-            cadastrar(nome, email, cpf, rg, rendaFixa, pretensao);
-            limparCampos();
-        } else {
-            // Adicione lógica para tratar campos inválidos
-            System.out.println("Campos inválidos");
-        }
-    }
-
-    private void editarCliente() {
-        String nome = clienteNomeField.getText();
-        String email = clienteEmailField.getText();
-        String cpf = clienteCpfField.getText();
-        String rg = clienteRgField.getText();
-        String rendaFixa = clienteRendaField.getText();
-        String pretensao = clientePretensaoField.getText();
-
-        if (validarCampos(nome, email, cpf, rg, rendaFixa, pretensao)) {
-            atualizar(nome, email, cpf, rg, rendaFixa, pretensao);
-            limparCampos();
-        } else {
-            // Adicione lógica para tratar campos inválidos
-            System.out.println("Campos inválidos");
-        }
-    }
-
-    private void apagarCliente() {
-        String nome = clienteNomeField.getText();
-        apagar(nome);
-        limparCampos();
-    }
-
-    private void limparCampos() {
-        clienteNomeField.setText("");
-        clienteEmailField.setText("");
-        clienteCpfField.setText("");
-        clienteRgField.setText("");
-        clienteRendaField.setText("");
-        clientePretensaoField.setText("");
-    }
-
-    private boolean validarCampos(String nome, String email, String cpf, String rg, String rendaFixa, String pretensao) {
-        // Adicione lógica para validar os campos, se necessário
-        return true; // Altere conforme necessário
-    }
-
-    public void cadastrar(String nome, String email, String cpf, String rg, String rendaFixa, String pretensao) {
-        // Adicione a lógica de cadastro aqui
-        Clientes novoCliente = new Clientes(nome, email, cpf, rg, rendaFixa, pretensao);
-        clientes.add(novoCliente);
-
-        // Atualiza a tabela
-        updateTable();
-    }
-
-    public void atualizar(String nome, String email, String cpf, String rg, String rendaFixa, String pretensao) {
-        // Adicione a lógica de atualização aqui
-        for (Clientes cliente : clientes) {
-            if (cliente.getNome().equals(nome)) {
-                cliente.setEmail(email);
-                cliente.setCpf(cpf);
-                cliente.setRg(rg);
-                cliente.setRendaFixa(rendaFixa);
-                cliente.setPretensao(pretensao);
-                break;
-            }
-        }
-
-        // Atualiza a tabela
-        updateTable();
-    }
-
-    public void apagar(String nome) {
-        // Adicione a lógica de exclusão aqui
-        clientes.removeIf(cliente -> cliente.getNome().equals(nome));
-
-        // Atualiza a tabela
-        updateTable();
-    }
-
-    private void updateTable() {
-        // Atualiza o modelo da tabela com os dados atualizados
-        tableModel.setRowCount(0); // Limpa as linhas existentes
+    // Atualiza a tabela com dados do banco de dados
+    private void atualizarTabela() {
+        tableModel.setRowCount(0);
+        clientes = new ClientesDAO().listarTodos();
 
         for (Clientes cliente : clientes) {
-            Object[] rowData = {cliente.getNome(), cliente.getEmail(), cliente.getCpf(), cliente.getRg(), cliente.getRendaFixa(), cliente.getPretensao()};
-            tableModel.addRow(rowData);
+            tableModel.addRow(new Object[] { cliente.getNome(), cliente.getCpf(),
+                    cliente.getTelefone(), cliente.getEmail(), cliente.getEndereco() });
+        }
+    }
+
+    // Exibe uma mensagem de ação concluída
+    private void acaoFeita(String mensagem) {
+        JOptionPane.showMessageDialog(null, mensagem, "Ação Concluída", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // Valida o telefone como número
+    private boolean verificarTel(String telefone) {
+        try {
+            Long.parseLong(telefone); // Alterado para Long para suportar números maiores
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    // Valida o CPF como número
+    private boolean verificarCPF(String cpf) {
+        try {
+            Long.parseLong(cpf); // Alterado para Long para suportar números maiores
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    // Verifica se o nome contém apenas caracteres alfabéticos
+    private boolean verificarNome(String nome) {
+        return nome.chars().allMatch(Character::isLetter);
+    }
+
+    // Cadastra um novo cliente no banco de dados
+    public void cadastrar(String nome, String cpf, String telefone, String email, String endereco) {
+        if (!verificarCPF(cpf) || !verificarTel(telefone) || !verificarNome(nome)) {
+            JOptionPane.showMessageDialog(null, "Dados inválidos. Verifique as informações.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        new ClientesDAO().cadastrar(nome, cpf, telefone, email, endereco);
+        atualizarTabela();
+        acaoFeita("Cliente cadastrado!");
+    }
+
+    // Atualiza os dados de um cliente no banco de dados
+    public void atualizar(String nome, String cpf, String telefone, String email, String endereco) {
+        int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente atualizar o cadastro?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (resposta == JOptionPane.YES_OPTION) {
+            if (!verificarCPF(cpf) || !verificarTel(telefone) || !verificarNome(nome)) {
+                JOptionPane.showMessageDialog(null, "Dados inválidos. Verifique as informações.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            new ClientesDAO().atualizar(nome, cpf, telefone, email, endereco);
+            atualizarTabela();
+            acaoFeita("Cadastro atualizado com sucesso!");
+        }
+    }
+
+    // Apaga um cliente do banco de dados
+    public void apagar(String cpf) {
+        int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente apagar o cadastro?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (resposta == JOptionPane.YES_OPTION) {
+            new ClientesDAO().apagar(cpf);
+            atualizarTabela();
+            acaoFeita("Cadastro apagado com sucesso!");
         }
     }
 }
