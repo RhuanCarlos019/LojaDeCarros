@@ -1,94 +1,87 @@
 package Model;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import java.awt.GridLayout;
+public class Carro {
 
-public class Carros extends JPanel {
     // Atributos
-    private JTextField carMarcaField;
-    private JTextField carModeloField;
-    private JTextField carAnoField;
-    private JTextField carPlacaField;
-    private JTextField carValorField;
+    private String marca;
+    private String modelo;
+    private String ano;
+    private String preco;
+    private String cor;
+    private String placa;
 
-    private JButton cadastrar;
-    private JButton editar;
-    private JButton apagar;
-
-    private JTable table;
-    private DefaultTableModel tableModel;
-
-    // Construtor(GUI-JPanel)
-    public Carros(String string, String string2, String string3, String string4, String string5) {
-        super();
-
-        // Entrada de dados
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(new JLabel("Cadastro Carros"));
-
-        JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(5, 2));
-        inputPanel.add(new JLabel("Marca"));
-        carMarcaField = new JTextField(20);
-        inputPanel.add(carMarcaField);
-        inputPanel.add(new JLabel("Modelo"));
-        carModeloField = new JTextField(20);
-        inputPanel.add(carModeloField);
-        inputPanel.add(new JLabel("Ano"));
-        carAnoField = new JTextField(20);
-        inputPanel.add(carAnoField);
-        inputPanel.add(new JLabel("Placa"));
-        carPlacaField = new JTextField(20);
-        inputPanel.add(carPlacaField);
-        inputPanel.add(new JLabel("Valor"));
-        carValorField = new JTextField(20);
-        inputPanel.add(carValorField);
-
-        add(inputPanel);
-
-        JPanel botoes = new JPanel();
-        cadastrar = new JButton("Cadastrar");
-        editar = new JButton("Editar");
-        apagar = new JButton("Apagar");
-
-        botoes.add(cadastrar);
-        botoes.add(editar);
-        botoes.add(apagar);
-
-        add(botoes);
-
-        // Tabela de carros
-        JScrollPane jSPane = new JScrollPane();
-        add(jSPane);
-        tableModel = new DefaultTableModel(new Object[][] {}, new String[] { "Marca", "Modelo", "Ano", "Placa", "Valor" });
-        table = new JTable(tableModel);
-        jSPane.setViewportView(table);
+    // Construtor
+    public Carro(String marca, String modelo, String ano, String preco, String cor, String placa) {
+        this.marca = marca;
+        this.modelo = modelo;
+        this.ano = ano;
+        this.preco = preco;
+        this.cor = cor;
+        this.placa = placa;
     }
 
-    public Object getMarca() {
-        return null;
+    // Métodos de acesso e modificação para Marca
+    public String getMarca() {
+        return marca;
     }
 
-    public Object getModelo() {
-        return null;
+    public void setMarca(String marca) {
+        this.marca = marca;
     }
 
-    public Object getAno() {
-        return null;
+    // Métodos de acesso e modificação para Modelo
+    public String getModelo() {
+        return modelo;
     }
 
-    public Object getPlaca() {
-        return null;
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
     }
 
-    public Object getValor() {
-        return null;
+    // Métodos de acesso e modificação para Ano
+    public String getAno() {
+        return ano;
+    }
+
+    public void setAno(String ano) {
+        this.ano = ano;
+    }
+
+    // Métodos de acesso e modificação para Preço
+    public String getPreco() {
+        return preco;
+    }
+
+    public void setPreco(String preco) {
+        this.preco = preco;
+    }
+
+    // Métodos de acesso e modificação para Cor
+    public String getCor() {
+        return cor;
+    }
+
+    public void setCor(String cor) {
+        this.cor = cor;
+    }
+
+    // Métodos de acesso e modificação para Placa
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    // Método adicional para exibir informações detalhadas do carro
+    public void exibirDetalhes() {
+        System.out.println("Detalhes do Carro:");
+        System.out.println("Marca: " + marca);
+        System.out.println("Modelo: " + modelo);
+        System.out.println("Ano: " + ano);
+        System.out.println("Preço: " + preco);
+        System.out.println("Cor: " + cor);
+        System.out.println("Placa: " + placa);
     }
 }
