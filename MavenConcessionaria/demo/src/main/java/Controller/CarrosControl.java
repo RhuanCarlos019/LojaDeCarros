@@ -1,118 +1,99 @@
 package Controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
-import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import Model.Carros;
+import DAO.CarrosDAO;
 
 public class CarrosControl {
+
     private List<Carros> carros;
     private DefaultTableModel tableModel;
     private JTable table;
-    private JTextField carMarcaField;
-    private JTextField carModeloField;
-    private JTextField carAnoField;
-    private JTextField carPlacaField;
-    private JTextField carValorField;
 
-    public CarrosControl(List<Carros> carros, DefaultTableModel tableModel, JTable table,
-                         JTextField carMarcaField, JTextField carModeloField, JTextField carAnoField,
-                         JTextField carPlacaField, JTextField carValorField) {
+    public CarrosControl(List<Carros> carros, DefaultTableModel tableModel, JTable table) {
         this.carros = carros;
         this.tableModel = tableModel;
         this.table = table;
-        this.carMarcaField = carMarcaField;
-        this.carModeloField = carModeloField;
-        this.carAnoField = carAnoField;
-        this.carPlacaField = carPlacaField;
-        this.carValorField = carValorField;
-
-        atualizarTabela();
-
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                int linhaSelecionada = table.rowAtPoint(evt.getPoint());
-                if (linhaSelecionada != -1) {
-                    carMarcaField.setText((String) table.getValueAt(linhaSelecionada, 0));
-                    carModeloField.setText((String) table.getValueAt(linhaSelecionada, 1));
-                    carAnoField.setText((String) table.getValueAt(linhaSelecionada, 2));
-                    carPlacaField.setText((String) table.getValueAt(linhaSelecionada, 3));
-                    carValorField.setText((String) table.getValueAt(linhaSelecionada, 4));
-                }
-            }
-        });
-
-        JButton cadastrar = new JButton("Cadastrar");
-        JButton editar = new JButton("Editar");
-        JButton apagar = new JButton("Apagar");
-
-        cadastrar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cadastrar(carMarcaField.getText(), carModeloField.getText(),
-                        carAnoField.getText(), carPlacaField.getText(), carValorField.getText());
-                carMarcaField.setText("");
-                carModeloField.setText("");
-                carAnoField.setText("");
-                carPlacaField.setText("");
-                carValorField.setText("");
-            }
-        });
-
-        editar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                atualizar(carMarcaField.getText(), carModeloField.getText(),
-                        carAnoField.getText(), carPlacaField.getText(), carValorField.getText());
-                carMarcaField.setText("");
-                carModeloField.setText("");
-                carAnoField.setText("");
-                carPlacaField.setText("");
-                carValorField.setText("");
-            }
-        });
-
-        apagar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                apagar(carPlacaField.getText());
-                carMarcaField.setText("");
-                carModeloField.setText("");
-                carAnoField.setText("");
-                carPlacaField.setText("");
-                carValorField.setText("");
-            }
-        });
     }
 
+    // Atualiza a tabela com dados do banco de dados
     private void atualizarTabela() {
         tableModel.setRowCount(0);
         carros = new CarrosDAO().listarTodos();
+
         for (Carros carro : carros) {
-            tableModel.addRow(new Object[]{carro.getMarca(), carro.getModelo(),
-                    carro.getAno(), carro.getPlaca(), carro.getValor()});
+            tableModel.addRow(new Object[] { carro.getMarca(), carro.getModelo(),
+                    carro.getAno(), carro.getPreco(), carro.getCor(), carro.getPlaca() });
         }
     }
 
-    public void cadastrar(String marca, String modelo, String ano, String placa, String valor) {
-        new CarrosDAO().cadastrar(marca, modelo, ano, placa, valor);
-        atualizarTabela();
+    // Exibe uma mensagem de ação concluída
+    private void acaoFeita(String mensagem) {
+        JOptionPane.showMessageDialog(null, mensagem, "Ação Concluída", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void atualizar(String marca, String modelo, String ano, String placa, String valor) {
-        new CarrosDAO().atualizar(marca, modelo, ano, placa, valor);
-        atualizarTabela();
+    // Valida o ano como número
+    private boolean verificarAno(String ano) {
+        try {
+            Integer.parseInt(ano);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
+    // Valida o valor como número
+    private boolean verificarPreco(String preco) {
+        try {
+            Double.parseDouble(preco);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    // Valida se a cor é um valor alfabético
+    private boolean verificarCor(String cor) {
+        return cor.chars().noneMatch(Character::isDigit);
+    }
+
+    // Cadastra um novo carro no banco de dados
+    public void cadastrar(String marca, String modelo, String ano, String preco, String cor, String placa) {
+        if (!verificarAno(ano) || !verificarPreco(preco) || !verificarCor(cor)) {
+            JOptionPane.showMessageDialog(null, "Dados inválidos. Verifique as informações.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        new CarrosDAO().cadastrar(marca, modelo, ano, preco, cor, placa);
+        atualizarTabela();
+        acaoFeita("Carro cadastrado!");
+    }
+
+    // Atualiza os dados de um carro no banco de dados
+    public void atualizar(String marca, String modelo, String ano, String preco, String cor, String placa) {
+        int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente atualizar o cadastro?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (resposta == JOptionPane.YES_OPTION) {
+            if (!verificarAno(ano) || !verificarPreco(preco) || !verificarCor(cor)) {
+                JOptionPane.showMessageDialog(null, "Dados inválidos. Verifique as informações.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            new CarrosDAO().atualizar(marca, modelo, ano, preco, cor, placa);
+            atualizarTabela();
+            acaoFeita("Cadastro atualizado com sucesso!");
+        }
+    }
+
+    // Apaga um carro do banco de dados
     public void apagar(String placa) {
-        new CarrosDAO().apagar(placa);
-        atualizarTabela();
+        int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente apagar o cadastro?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (resposta == JOptionPane.YES_OPTION) {
+            new CarrosDAO().apagar(placa);
+            atualizarTabela();
+            acaoFeita("Cadastro apagado com sucesso!");
+        }
     }
 }
